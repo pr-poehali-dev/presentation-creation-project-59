@@ -1,548 +1,408 @@
 import { useState, useEffect, useCallback } from "react";
 import Icon from "@/components/ui/icon";
 
-const IMG_COVER = "https://cdn.poehali.dev/projects/6cbce7e5-0b47-49cb-8cf5-bbf96d6fe66e/files/175eb887-3f76-444e-9d02-d3ed669d1f0a.jpg";
-const IMG_MOSAIC = "https://cdn.poehali.dev/projects/6cbce7e5-0b47-49cb-8cf5-bbf96d6fe66e/files/4fd6afa2-b625-4e4a-9aba-1f27cd703964.jpg";
-const IMG_NATURE = "https://cdn.poehali.dev/projects/6cbce7e5-0b47-49cb-8cf5-bbf96d6fe66e/files/b1d1c78d-19eb-4610-bead-504cf9777874.jpg";
+const IMGS = {
+  cover:    "https://cdn.poehali.dev/projects/6cbce7e5-0b47-49cb-8cf5-bbf96d6fe66e/files/175eb887-3f76-444e-9d02-d3ed669d1f0a.jpg",
+  mosaic:   "https://cdn.poehali.dev/projects/6cbce7e5-0b47-49cb-8cf5-bbf96d6fe66e/files/4fd6afa2-b625-4e4a-9aba-1f27cd703964.jpg",
+  nature:   "https://cdn.poehali.dev/projects/6cbce7e5-0b47-49cb-8cf5-bbf96d6fe66e/files/b1d1c78d-19eb-4610-bead-504cf9777874.jpg",
+  bees:     "https://cdn.poehali.dev/projects/6cbce7e5-0b47-49cb-8cf5-bbf96d6fe66e/files/142092d8-04c1-4c7d-a03c-0213c8875c05.jpg",
+  wolves:   "https://cdn.poehali.dev/projects/6cbce7e5-0b47-49cb-8cf5-bbf96d6fe66e/files/1a85c8ee-3b9c-462b-bc3e-89ce554cfbb0.jpg",
+  elephant: "https://cdn.poehali.dev/projects/6cbce7e5-0b47-49cb-8cf5-bbf96d6fe66e/files/ecdbe358-79d7-416a-93b5-4e615df1710b.jpg",
+  dolphin:  "https://cdn.poehali.dev/projects/6cbce7e5-0b47-49cb-8cf5-bbf96d6fe66e/files/553acfae-226d-41e8-9b92-adebdfd99ba6.jpg",
+  ants:     "https://cdn.poehali.dev/projects/6cbce7e5-0b47-49cb-8cf5-bbf96d6fe66e/files/cc621c76-d83e-4c99-8315-acd43de7df9b.jpg",
+  bird:     "https://cdn.poehali.dev/projects/6cbce7e5-0b47-49cb-8cf5-bbf96d6fe66e/files/74485b1a-46ae-4f37-8883-f26b58323da7.jpg",
+  peacock:  "https://cdn.poehali.dev/projects/6cbce7e5-0b47-49cb-8cf5-bbf96d6fe66e/files/4fac6aae-8820-40e5-aaf2-30cdb15c35c2.jpg",
+  chimp:    "https://cdn.poehali.dev/projects/6cbce7e5-0b47-49cb-8cf5-bbf96d6fe66e/files/769b87a1-5449-4570-83c7-90c6dd037a91.jpg",
+  whale:    "https://cdn.poehali.dev/projects/6cbce7e5-0b47-49cb-8cf5-bbf96d6fe66e/files/8eeb4fc0-9973-471f-a0c8-ed62bde6f982.jpg",
+  research: "https://cdn.poehali.dev/projects/6cbce7e5-0b47-49cb-8cf5-bbf96d6fe66e/files/1efd45a2-16fa-46bd-b090-64dd3cf9ca9b.jpg",
+};
 
 const TOTAL = 13;
 
-function SlideWrapper({ children, bg, bgImage }: { children: React.ReactNode; bg?: string; bgImage?: string }) {
-  return (
-    <div
-      className="slide-wrapper"
-      style={{
-        background: bg || "var(--slide-bg)",
-        backgroundImage: bgImage ? `url(${bgImage})` : undefined,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-    >
-      {bgImage && <div className="slide-overlay" />}
-      <div className="slide-content">{children}</div>
-    </div>
-  );
+function Badge({ children }: { children: React.ReactNode }) {
+  return <div className="s-badge">{children}</div>;
 }
-
 function Tag({ children }: { children: React.ReactNode }) {
-  return <span className="tag">{children}</span>;
+  return <span className="s-tag">{children}</span>;
+}
+function Credit({ text }: { text: string }) {
+  return <div className="s-credit">{text}</div>;
 }
 
-function SectionBadge({ children }: { children: React.ReactNode }) {
+function PhotoSlide({ image, overlay, children }: {
+  image: string; overlay?: string; children: React.ReactNode;
+}) {
   return (
-    <div className="section-badge">
-      <span>{children}</span>
+    <div className="ps-root" style={{ backgroundImage: `url(${image})` }}>
+      <div className="ps-ov" style={{ background: overlay }} />
+      <div className="ps-body">{children}</div>
     </div>
   );
 }
 
-function InfoCard({ icon, title, text }: { icon: string; title: string; text: string }) {
+function LightSlide({ image, children }: { image?: string; children: React.ReactNode }) {
   return (
-    <div className="info-card">
-      <div className="info-card-icon">{icon}</div>
-      <div>
-        <div className="info-card-title">{title}</div>
-        {text && <div className="info-card-text">{text}</div>}
-      </div>
+    <div className="ls-root">
+      {image && (
+        <div className="ls-img">
+          <img src={image} alt="" />
+        </div>
+      )}
+      <div className={`ls-body ${image ? "ls-half" : "ls-full"}`}>{children}</div>
     </div>
   );
 }
 
-function CommCard({ emoji, label }: { emoji: string; label: string }) {
-  return (
-    <div className="comm-card">
-      <span className="comm-emoji">{emoji}</span>
-      <span className="comm-label">{label}</span>
-    </div>
-  );
-}
+/* ══════ SLIDES ══════ */
 
 const Slide1 = () => (
-  <SlideWrapper bgImage={IMG_COVER}>
-    <div className="slide1-inner">
-      <div className="slide1-top">
-        <div className="slide1-lyceum">Лицей «Магистр» · г. Орёл · 2026</div>
-        <div className="slide1-type">Индивидуальный проект</div>
+  <PhotoSlide image={IMGS.cover} overlay="linear-gradient(120deg,rgba(10,25,15,0.82) 0%,rgba(4,15,28,0.55) 100%)">
+    <div className="s1-wrap">
+      <div className="s1-meta">
+        <span>Лицей «Магистр»</span>
+        <span className="s1-dot" />
+        <span>г. Орёл</span>
+        <span className="s1-dot" />
+        <span>2026 г.</span>
       </div>
-      <div className="slide1-center">
-        <div className="slide1-klass">10 класс</div>
-        <h1 className="slide1-title">Виды языковых систем<br />у животных</h1>
-        <div className="slide1-divider" />
-        <div className="slide1-authors">
-          <div className="slide1-author-row">
-            <span className="slide1-author-role">Автор проекта:</span>
-            <span className="slide1-author-name">Авдеева Каролина</span>
-          </div>
-          <div className="slide1-author-row">
-            <span className="slide1-author-role">Руководитель:</span>
-            <span className="slide1-author-name">Климова Наталья Юрьевна</span>
-          </div>
+      <div className="s1-pill">Индивидуальный проект · 10 класс</div>
+      <h1 className="s1-title">Виды языковых<br />систем у животных</h1>
+      <div className="s1-line" />
+      <div className="s1-authors">
+        <div className="s1-author">
+          <span className="s1-role">Автор проекта</span>
+          <span className="s1-name">Авдеева Каролина</span>
+        </div>
+        <div className="s1-sep" />
+        <div className="s1-author">
+          <span className="s1-role">Руководитель</span>
+          <span className="s1-name">Климова Наталья Юрьевна</span>
         </div>
       </div>
-      <div className="slide1-bottom">
-        <div className="slide1-year">2026</div>
-      </div>
     </div>
-  </SlideWrapper>
+  </PhotoSlide>
 );
 
 const Slide2 = () => (
-  <SlideWrapper bgImage={IMG_MOSAIC}>
-    <div className="slide2-inner">
-      <SectionBadge>Содержание</SectionBadge>
-      <h2 className="slide-h2">Структура проекта</h2>
-      <div className="contents-grid">
+  <PhotoSlide image={IMGS.mosaic} overlay="linear-gradient(135deg,rgba(255,255,255,0.91) 0%,rgba(235,245,255,0.94) 100%)">
+    <div className="s2-wrap">
+      <Badge>Содержание</Badge>
+      <h2 className="s-h2 dark">Структура проекта</h2>
+      <div className="s2-grid">
         {[
-          { emoji: "🎤", text: "Введение" },
-          { emoji: "🧠", text: "§1. Теоретические основы коммуникации животных" },
-          { emoji: "🔄", text: "§2. Формы и механизмы биологической коммуникации" },
-          { emoji: "🐬", text: "§3. Языковое поведение животных" },
-          { emoji: "🔬", text: "§4. Современные исследования" },
-          { emoji: "🌍", text: "Заключение" },
-          { emoji: "📚", text: "Список источников" },
-          { emoji: "📎", text: "Приложения" },
-        ].map((item, i) => (
-          <div key={i} className="contents-item">
-            <span className="contents-num">{String(i + 1).padStart(2, "0")}</span>
-            <span className="contents-emoji">{item.emoji}</span>
-            <span className="contents-text">{item.text}</span>
+          {n:"01",e:"🎤",t:"Введение"},
+          {n:"02",e:"🧠",t:"§1. Теоретические основы коммуникации животных"},
+          {n:"03",e:"🔄",t:"§2. Формы и механизмы биологической коммуникации"},
+          {n:"04",e:"🐬",t:"§3. Языковое поведение животных"},
+          {n:"05",e:"🔬",t:"§4. Современные исследования"},
+          {n:"06",e:"🌍",t:"Заключение"},
+          {n:"07",e:"📚",t:"Список источников"},
+          {n:"08",e:"📎",t:"Приложения"},
+        ].map(c=>(
+          <div key={c.n} className="s2-item">
+            <span className="s2-num">{c.n}</span>
+            <span className="s2-em">{c.e}</span>
+            <span className="s2-txt">{c.t}</span>
           </div>
         ))}
       </div>
     </div>
-  </SlideWrapper>
+  </PhotoSlide>
 );
 
 const Slide3 = () => (
-  <SlideWrapper bg="linear-gradient(135deg, #0a1628 0%, #0d2340 40%, #0a3320 100%)">
-    <div className="slide-two-col">
-      <div className="slide-col-text">
-        <SectionBadge>Введение</SectionBadge>
-        <h2 className="slide-h2">Почему животные<br /><em>"говорят"?</em></h2>
-        <div className="bullet-list">
-          <div className="bullet-item">
-            <div className="bullet-dot" />
-            <div>
-              <strong>Коммуникация = выживание</strong>
-              <p>Передача информации — основа жизни в группе</p>
-            </div>
-          </div>
-          <div className="bullet-item">
-            <div className="bullet-dot" />
-            <div>
-              <strong>Цель исследования</strong>
-              <p>Изучить языковые системы у разных видов животных</p>
-            </div>
-          </div>
-          <div className="bullet-item">
-            <div className="bullet-dot" />
-            <div>
-              <strong>Задачи</strong>
-              <p>Классификация · Анализ · Примеры · Открытия</p>
-            </div>
-          </div>
+  <LightSlide image={IMGS.bees}>
+    <Badge>Введение</Badge>
+    <h2 className="s-h2 dark">Почему животные<br /><em className="acc">"говорят"?</em></h2>
+    <div className="bullets">
+      {[
+        {ic:"🌿",h:"Коммуникация = выживание",t:"Передача информации — фундамент жизни в группе, без неё невозможны охота, защита, размножение"},
+        {ic:"🎯",h:"Цель исследования",t:"Изучить и классифицировать языковые системы у представителей животного мира"},
+        {ic:"📋",h:"Задачи",t:"Классификация видов · Анализ механизмов · Конкретные примеры · Современные открытия"},
+      ].map((b,i)=>(
+        <div key={i} className="bullet">
+          <div className="bullet-ic">{b.ic}</div>
+          <div><div className="bullet-h">{b.h}</div><div className="bullet-t">{b.t}</div></div>
         </div>
-        <div className="photo-credit">© BBC Earth / iNaturalist</div>
-      </div>
-      <div className="slide-col-img">
-        <img src={IMG_COVER} alt="Коммуникация животных" className="slide-img-rounded" />
-        <div className="img-caption">Пчёлы исполняют «танец» для передачи информации о нектаре</div>
-      </div>
+      ))}
     </div>
-  </SlideWrapper>
+    <Credit text="© BBC Earth / iNaturalist" />
+  </LightSlide>
 );
 
 const Slide4 = () => (
-  <SlideWrapper bg="linear-gradient(135deg, #08152a 0%, #0a2535 50%, #061820 100%)">
-    <div className="slide-col-text" style={{ maxWidth: "100%" }}>
-      <SectionBadge>§1. Теоретические основы</SectionBadge>
-      <h2 className="slide-h2">Что такое коммуникация<br />у животных?</h2>
-      <div className="schema-row">
-        <div className="schema-box">🐾<br />Животное</div>
-        <div className="schema-arrow">
-          <Icon name="ArrowRight" size={28} />
-          <span>Сигнал</span>
-        </div>
-        <div className="schema-box">📡<br />Канал</div>
-        <div className="schema-arrow">
-          <Icon name="ArrowRight" size={28} />
-          <span>Получение</span>
-        </div>
-        <div className="schema-box">🐾<br />Получатель</div>
-      </div>
-      <div className="comm-grid">
-        <CommCard emoji="🎵" label="Звуковые сигналы" />
-        <CommCard emoji="🧪" label="Химические (феромоны)" />
-        <CommCard emoji="👁️" label="Визуальные (жесты, окраска)" />
-        <CommCard emoji="✋" label="Тактильные (прикосновения)" />
-        <CommCard emoji="⚡" label="Электромагнитные" />
-      </div>
-      <div className="photo-credit">Схема на основе данных ethology.ru / Wikimedia Commons</div>
+  <LightSlide image={IMGS.ants}>
+    <Badge>§1. Теоретические основы</Badge>
+    <h2 className="s-h2 dark">Что такое коммуникация<br />у животных?</h2>
+    <div className="schema">
+      <div className="sch-box">🐾<br/>Животное</div>
+      <div className="sch-arr"><Icon name="ArrowRight" size={20}/><span>сигнал</span></div>
+      <div className="sch-box">📡<br/>Канал</div>
+      <div className="sch-arr"><Icon name="ArrowRight" size={20}/><span>приём</span></div>
+      <div className="sch-box">🐾<br/>Получатель</div>
     </div>
-  </SlideWrapper>
+    <div className="chips">
+      {[["🎵","Звуковые"],["🧪","Химические"],["👁️","Визуальные"],["✋","Тактильные"],["⚡","Электромаг."]].map(([e,l])=>(
+        <div key={l} className="chip"><span>{e}</span><span>{l}</span></div>
+      ))}
+    </div>
+    <Credit text="Схема на основе данных ethology.ru / Wikimedia Commons" />
+  </LightSlide>
 );
 
 const Slide5 = () => (
-  <SlideWrapper bg="linear-gradient(135deg, #07131f 0%, #0b2230 50%, #061a12 100%)">
-    <div className="slide-col-text" style={{ maxWidth: "100%" }}>
-      <SectionBadge>§2. Формы и механизмы</SectionBadge>
-      <h2 className="slide-h2">Как животные<br /><em>"разговаривают"?</em></h2>
-      <div className="animals-grid">
-        {[
-          { emoji: "🐝", name: "Пчёлы", desc: "Танец — передача координат нектара", tag: "Визуальная" },
-          { emoji: "🐺", name: "Волк", desc: "Позы тела — демонстрация иерархии", tag: "Визуальная" },
-          { emoji: "🐘", name: "Слон", desc: "Инфразвук — связь на десятки км", tag: "Акустическая" },
-          { emoji: "🐟", name: "Электрический угорь", desc: "Электрические поля для навигации", tag: "Электромаг." },
-          { emoji: "🐦", name: "Соловей", desc: "Видовые песни и диалекты", tag: "Акустическая" },
-          { emoji: "🐜", name: "Муравьи", desc: "Феромонные тропы — карты маршрутов", tag: "Химическая" },
-        ].map((a, i) => (
-          <div key={i} className="animal-card">
-            <div className="animal-emoji">{a.emoji}</div>
-            <div className="animal-name">{a.name}</div>
-            <div className="animal-desc">{a.desc}</div>
+  <div className="s5-root">
+    <div className="s5-top">
+      <Badge>§2. Формы и механизмы</Badge>
+      <h2 className="s-h2 dark">Как животные <em className="acc">"разговаривают"?</em></h2>
+    </div>
+    <div className="s5-grid">
+      {[
+        {img:IMGS.bees,     e:"🐝",n:"Пчёлы",          d:"Виляющий танец — передача координат нектара",       tag:"Визуальная"},
+        {img:IMGS.wolves,   e:"🐺",n:"Волки",           d:"Позы тела — демонстрация иерархии в стае",           tag:"Визуальная"},
+        {img:IMGS.elephant, e:"🐘",n:"Слоны",           d:"Инфразвук — общение на десятки километров",          tag:"Акустическая"},
+        {img:IMGS.bird,     e:"🐦",n:"Соловей",         d:"Видовые песни, диалекты и имитация звуков",          tag:"Акустическая"},
+        {img:IMGS.ants,     e:"🐜",n:"Муравьи",         d:"Феромонные тропы — точные карты маршрутов",          tag:"Химическая"},
+        {img:IMGS.dolphin,  e:"🐬",n:"Дельфины",        d:"Уникальные свисты — аналог имён особей",             tag:"Акустическая"},
+      ].map(a=>(
+        <div key={a.n} className="s5-card" style={{backgroundImage:`url(${a.img})`}}>
+          <div className="s5-ov"/>
+          <div className="s5-cb">
+            <div className="s5-em">{a.e}</div>
+            <div className="s5-name">{a.n}</div>
+            <div className="s5-desc">{a.d}</div>
             <Tag>{a.tag}</Tag>
           </div>
-        ))}
-      </div>
-      <div className="photo-credit">Фото: National Geographic, PLOS ONE, iNaturalist</div>
+        </div>
+      ))}
     </div>
-  </SlideWrapper>
+    <div className="s5-credit">Фото: National Geographic, PLOS ONE, iNaturalist</div>
+  </div>
 );
 
 const Slide6 = () => (
-  <SlideWrapper bg="linear-gradient(135deg, #071220 0%, #0a1f10 60%, #07120a 100%)">
-    <div className="slide-two-col">
-      <div className="slide-col-text">
-        <SectionBadge>Химическая коммуникация</SectionBadge>
-        <h2 className="slide-h2">Общение<br />через запах</h2>
-        <div className="fact-block">
-          <div className="fact-icon">🧪</div>
-          <div>
-            <div className="fact-title">Феромоны = химические «сообщения»</div>
-            <div className="fact-text">Молекулы, несущие точную информацию другим особям своего вида</div>
-          </div>
-        </div>
-        <div className="fact-block">
-          <div className="fact-icon">🗺️</div>
-          <div>
-            <div className="fact-title">Аттрактанты, репелленты, маркеры</div>
-            <div className="fact-text">Три основных типа феромонов по функции</div>
-          </div>
-        </div>
-        <div className="fact-block">
-          <div className="fact-icon">🌊</div>
-          <div>
-            <div className="fact-title">Работает в темноте и под водой</div>
-            <div className="fact-text">Не зависит от видимости и освещения</div>
-          </div>
-        </div>
-        <div className="photo-credit">© Alex Wild / AntWeb.org</div>
+  <LightSlide image={IMGS.ants}>
+    <Badge>Химическая коммуникация</Badge>
+    <h2 className="s-h2 dark">Общение<br />через запах</h2>
+    {[
+      {i:"🧪",h:"Феромоны = химические «сообщения»",t:"Молекулы, несущие точную информацию другим особям своего вида через окружающую среду"},
+      {i:"🗂️",h:"Аттрактанты, репелленты, маркеры",t:"Три основных типа феромонов по функции: привлечение, отпугивание, маркировка территории"},
+      {i:"🌊",h:"Работает в темноте и под водой",t:"Химическая коммуникация не зависит от видимости — идеальна для ночных и водных животных"},
+    ].map((f,i)=>(
+      <div key={i} className="fact">
+        <div className="fact-ic">{f.i}</div>
+        <div><div className="fact-h">{f.h}</div><div className="fact-t">{f.t}</div></div>
       </div>
-      <div className="slide-col-img">
-        <div className="emoji-showcase">
-          <div className="emoji-big">🐜</div>
-          <div className="emoji-label">Муравьи оставляют феромонный след</div>
-          <div className="emoji-big" style={{ marginTop: "1.5rem" }}>🦫</div>
-          <div className="emoji-label">Бобёр метит территорию</div>
-        </div>
-      </div>
-    </div>
-  </SlideWrapper>
+    ))}
+    <Credit text="© Alex Wild / AntWeb.org" />
+  </LightSlide>
 );
 
 const Slide7 = () => (
-  <SlideWrapper bg="linear-gradient(135deg, #071828 0%, #092030 60%, #061015 100%)">
-    <div className="slide-two-col">
-      <div className="slide-col-text">
-        <SectionBadge>Акустическая коммуникация</SectionBadge>
-        <h2 className="slide-h2">Язык<br />звуков</h2>
-        <div className="fact-block">
-          <div className="fact-icon">🐦</div>
-          <div>
-            <div className="fact-title">Сиринкс у птиц</div>
-            <div className="fact-text">Уникальный голосовой орган — производит сложные мелодии</div>
-          </div>
-        </div>
-        <div className="fact-block">
-          <div className="fact-icon">🦇</div>
-          <div>
-            <div className="fact-title">Эхолокация у летучих мышей</div>
-            <div className="fact-text">Ультразвук частотой 20–200 кГц для навигации</div>
-          </div>
-        </div>
-        <div className="fact-block">
-          <div className="fact-icon">🐘</div>
-          <div>
-            <div className="fact-title">Инфразвук у слонов</div>
-            <div className="fact-text">Связь на расстоянии до 10 км через почву</div>
-          </div>
-        </div>
-        <div className="photo-credit">© NOAA / Wikimedia Commons</div>
+  <LightSlide image={IMGS.bird}>
+    <Badge>Акустическая коммуникация</Badge>
+    <h2 className="s-h2 dark">Язык<br />звуков</h2>
+    {[
+      {i:"🐦",h:"Сиринкс у птиц",t:"Уникальный голосовой орган — производит сложные многослойные мелодии и имитирует другие звуки"},
+      {i:"🦇",h:"Эхолокация летучих мышей",t:"Ультразвук 20–200 кГц позволяет ориентироваться в полной темноте и обнаруживать добычу"},
+      {i:"🐘",h:"Инфразвук слонов",t:"Сигналы ниже 20 Гц распространяются через землю на расстояние до 10 километров"},
+    ].map((f,i)=>(
+      <div key={i} className="fact">
+        <div className="fact-ic">{f.i}</div>
+        <div><div className="fact-h">{f.h}</div><div className="fact-t">{f.t}</div></div>
       </div>
-      <div className="slide-col-img">
-        <div className="sound-vis">
-          <div className="sound-wave-container">
-            {[1,2,3,4,5,6,7,8,9,10].map(i => (
-              <div key={i} className="sound-bar" style={{ animationDelay: `${i * 0.1}s`, height: `${Math.sin(i) * 30 + 50}px` }} />
-            ))}
-          </div>
-          <div className="sound-label">🐬 Эхолокация дельфина</div>
-          <div className="sound-wave-container" style={{ marginTop: "1.5rem" }}>
-            {[1,2,3,4,5,6,7,8].map(i => (
-              <div key={i} className="sound-bar sound-bar-low" style={{ animationDelay: `${i * 0.15}s`, height: `${Math.cos(i) * 20 + 35}px` }} />
-            ))}
-          </div>
-          <div className="sound-label">🐘 Инфразвук слона</div>
-        </div>
-      </div>
-    </div>
-  </SlideWrapper>
+    ))}
+    <Credit text="© NOAA / Wikimedia Commons" />
+  </LightSlide>
 );
 
 const Slide8 = () => (
-  <SlideWrapper bg="linear-gradient(135deg, #0a1520 0%, #14240a 50%, #0a1820 100%)">
-    <div className="slide-col-text" style={{ maxWidth: "100%" }}>
-      <SectionBadge>Визуальная и тактильная</SectionBadge>
-      <h2 className="slide-h2">Жесты, цвет<br /><em>и прикосновения</em></h2>
-      <div className="visual-grid">
-        <div className="visual-card">
-          <div className="visual-emoji">🦚</div>
-          <div className="visual-title">Позы = статус</div>
-          <div className="visual-text">Павлин демонстрирует хвост · Волки показывают иерархию</div>
+  <div className="s8-root">
+    <div className="s8-left">
+      <Badge>Визуальная и тактильная</Badge>
+      <h2 className="s-h2 dark">Жесты, цвет<br />и <em className="acc">прикосновения</em></h2>
+      {[
+        {i:"🦚",h:"Позы = статус",t:"Павлин раскрывает хвост · Волки демонстрируют иерархию через положение тела и жесты"},
+        {i:"🦎",h:"Цвет = настроение",t:"Хамелеон меняет окраску · Рыбы-попугаи сигнализируют цветом чешуи"},
+        {i:"🐘",h:"Прикосновения = связь",t:"Слоны касаются хоботами · Муравьи обмениваются сигналами через антенны"},
+      ].map((f,i)=>(
+        <div key={i} className="fact">
+          <div className="fact-ic">{f.i}</div>
+          <div><div className="fact-h">{f.h}</div><div className="fact-t">{f.t}</div></div>
         </div>
-        <div className="visual-card">
-          <div className="visual-emoji">🦎</div>
-          <div className="visual-title">Цвет = настроение</div>
-          <div className="visual-text">Хамелеон меняет окраску · Рыбы сигнализируют состояние</div>
-        </div>
-        <div className="visual-card">
-          <div className="visual-emoji">🐘</div>
-          <div className="visual-title">Прикосновения = связь</div>
-          <div className="visual-text">Слоны касаются хоботами · Муравьи антеннами обмениваются</div>
-        </div>
-      </div>
-      <div className="photo-credit">© Frans Lanting / BBC Earth</div>
+      ))}
+      <Credit text="© Frans Lanting / BBC Earth" />
     </div>
-  </SlideWrapper>
+    <div className="s8-photos">
+      <img src={IMGS.peacock}  alt="Павлин" className="s8-tall"/>
+      <div className="s8-col">
+        <img src={IMGS.wolves}   alt="Волки"/>
+        <img src={IMGS.elephant} alt="Слоны"/>
+      </div>
+    </div>
+  </div>
 );
 
 const Slide9 = () => (
-  <SlideWrapper bg="linear-gradient(135deg, #071825 0%, #0a1f30 60%, #051015 100%)">
-    <div className="slide-two-col">
-      <div className="slide-col-text">
-        <SectionBadge>§3. Языковое поведение</SectionBadge>
-        <h2 className="slide-h2">Есть ли «язык»<br />у животных?</h2>
-        <div className="lang-items">
-          <InfoCard icon="🐬" title="Дельфины" text="Уникальные «именные» свисты — каждый дельфин имеет своё имя" />
-          <InfoCard icon="🦜" title="Попугай Алекс" text="Понимал 150 слов, умел считать до 6 и называть цвета" />
-          <InfoCard icon="🐒" title="Обезьяны" text="Жестовые системы с контекстом — разное значение в разных ситуациях" />
-        </div>
-        <div className="lang-note">
-          <Icon name="Info" size={16} />
-          <span>Нет грамматики, но есть смысл · Диалекты у китов и птиц</span>
-        </div>
-        <div className="photo-credit">© Irene Pepperberg / National Geographic</div>
+  <LightSlide image={IMGS.chimp}>
+    <Badge>§3. Языковое поведение</Badge>
+    <h2 className="s-h2 dark">Есть ли «язык»<br />у животных?</h2>
+    {[
+      {i:"🐬",h:"Дельфины — «именные» свисты",t:"Каждый дельфин имеет уникальный свист-имя, которым его называют сородичи — открытие 2013 г."},
+      {i:"🦜",h:"Попугай Алекс",t:"Понимал 150 слов, умел считать до 6, различал цвета и формы — 30 лет исследований Пепперберг"},
+      {i:"🐒",h:"Обезьяны и жесты",t:"Жестовые системы шимпанзе контекстуально-зависимы: один жест — разный смысл в разных ситуациях"},
+    ].map((f,i)=>(
+      <div key={i} className="fact">
+        <div className="fact-ic">{f.i}</div>
+        <div><div className="fact-h">{f.h}</div><div className="fact-t">{f.t}</div></div>
       </div>
-      <div className="slide-col-img">
-        <div className="emoji-showcase">
-          <div className="emoji-big">🐬</div>
-          <div className="emoji-label">Свисты дельфинов — уникальные «имена»</div>
-          <div style={{ height: "1.5rem" }} />
-          <div className="emoji-big">🦜</div>
-          <div className="emoji-label">Попугай Алекс понимал слова и числа</div>
-        </div>
-      </div>
+    ))}
+    <div className="s9-note">
+      <Icon name="Info" size={15}/>
+      <span>Нет грамматики, но есть смысл · Диалекты у китов и птиц</span>
     </div>
-  </SlideWrapper>
+    <Credit text="© Irene Pepperberg / National Geographic" />
+  </LightSlide>
 );
 
 const Slide10 = () => (
-  <SlideWrapper bg="linear-gradient(135deg, #06101a 0%, #091c2e 50%, #040d15 100%)">
-    <div className="slide-col-text" style={{ maxWidth: "100%" }}>
-      <SectionBadge>§4. Современные исследования</SectionBadge>
-      <h2 className="slide-h2">Что открыли учёные?</h2>
-      <div className="research-grid">
-        <div className="research-card">
-          <div className="research-num">01</div>
-          <div className="research-emoji">🤖</div>
-          <div className="research-title">ИИ расшифровывает «речь»</div>
-          <div className="research-text">Нейросети анализируют свисты и клики дельфинов, выявляя смысловые паттерны</div>
-        </div>
-        <div className="research-card">
-          <div className="research-num">02</div>
-          <div className="research-emoji">🐝</div>
-          <div className="research-title">Танец пчёл — оценка качества</div>
-          <div className="research-text">Пчёлы кодируют расстояние, направление и качество нектара в движениях танца</div>
-        </div>
-        <div className="research-card">
-          <div className="research-num">03</div>
-          <div className="research-emoji">🐘</div>
-          <div className="research-title">Слоны узнают голоса</div>
-          <div className="research-text">Слоны идентифицируют голоса родственников на расстоянии до 10 километров</div>
-        </div>
-      </div>
-      <div className="photo-credit">© PLOS Computational Biology / BBC</div>
+  <div className="s10-root">
+    <div className="s10-bg" style={{backgroundImage:`url(${IMGS.research})`}}>
+      <div className="s10-ov"/>
     </div>
-  </SlideWrapper>
+    <div className="s10-body">
+      <Badge>§4. Современные исследования</Badge>
+      <h2 className="s-h2 light">Что открыли учёные?</h2>
+      <div className="s10-cards">
+        {[
+          {n:"01",img:IMGS.dolphin, e:"🤖",h:"ИИ расшифровывает «речь»",    t:"Нейросети анализируют свисты дельфинов, выявляя смысловые паттерны и словари"},
+          {n:"02",img:IMGS.bees,    e:"🐝",h:"Танец пчёл — точная карта",    t:"Пчёлы кодируют расстояние, направление и качество нектара в ритме танца"},
+          {n:"03",img:IMGS.elephant,e:"🐘",h:"Слоны узнают голоса за 10 км", t:"Идентифицируют голоса родственников через инфразвуковые почвенные вибрации"},
+        ].map(c=>(
+          <div key={c.n} className="s10-card">
+            <img src={c.img} alt={c.h} className="s10-ci"/>
+            <div className="s10-cb">
+              <div className="s10-cn">{c.n}</div>
+              <div className="s10-ce">{c.e}</div>
+              <div className="s10-ch">{c.h}</div>
+              <div className="s10-ct">{c.t}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <Credit text="© PLOS Computational Biology / BBC" />
+    </div>
+  </div>
 );
 
 const Slide11 = () => (
-  <SlideWrapper bgImage={IMG_NATURE}>
-    <div className="slide11-inner">
-      <SectionBadge>Заключение</SectionBadge>
-      <h2 className="slide-h2 slide-h2-light">Мир, в котором животные <em>«говорят»</em></h2>
-      <div className="conclusion-cards">
-        <div className="concl-card">
-          <div className="concl-icon">🌱</div>
-          <div className="concl-title">Коммуникация = основа выживания</div>
-          <div className="concl-text">Без передачи информации невозможна социальная жизнь, охота, защита</div>
-        </div>
-        <div className="concl-card">
-          <div className="concl-icon">🔬</div>
-          <div className="concl-title">Системы сложные, но иные</div>
-          <div className="concl-text">Не имеют грамматики как у человека, но несут реальный смысл</div>
-        </div>
-        <div className="concl-card">
-          <div className="concl-icon">🧬</div>
-          <div className="concl-title">Ключ к эволюции языка</div>
-          <div className="concl-text">Исследования помогают понять, как возник человеческий язык</div>
-        </div>
+  <PhotoSlide image={IMGS.nature} overlay="linear-gradient(135deg,rgba(8,25,12,0.78) 0%,rgba(4,18,35,0.62) 100%)">
+    <div className="s11-wrap">
+      <Badge>Заключение</Badge>
+      <h2 className="s-h2 light">Мир, в котором животные <em className="acc-light">«говорят»</em></h2>
+      <div className="s11-cards">
+        {[
+          {e:"🌱",h:"Коммуникация = основа выживания",t:"Без передачи информации невозможна социальная жизнь, охота и защита от хищников"},
+          {e:"🔬",h:"Системы сложные, но иные",t:"Не имеют грамматики как у человека, однако несут реальный информационный смысл"},
+          {e:"🧬",h:"Ключ к эволюции языка",t:"Изучение коммуникации животных помогает понять, как возник человеческий язык"},
+        ].map((c,i)=>(
+          <div key={i} className="s11-card">
+            <div className="s11-em">{c.e}</div>
+            <div className="s11-h">{c.h}</div>
+            <div className="s11-t">{c.t}</div>
+          </div>
+        ))}
       </div>
-      <div className="photo-credit">© Paul Nicklen / National Geographic</div>
+      <Credit text="© Paul Nicklen / National Geographic" />
     </div>
-  </SlideWrapper>
+  </PhotoSlide>
 );
 
 const Slide12 = () => (
-  <SlideWrapper bg="linear-gradient(135deg, #06101a 0%, #0a1825 100%)">
-    <div className="slide-col-text" style={{ maxWidth: "760px", margin: "0 auto" }}>
-      <SectionBadge>Источники</SectionBadge>
-      <h2 className="slide-h2">Использованные источники</h2>
-      <div className="sources-list">
-        {[
-          { num: "1", text: "Кримина, В. А. «Биологическая коммуникация»", tag: "Книга" },
-          { num: "2", text: "Никитин, М. В. «Этология животных»", tag: "Книга" },
-          { num: "3", text: "National Geographic — статьи о дельфинах, пчёлах, слонах", tag: "Интернет" },
-          { num: "4", text: "BBC Earth — документальные материалы", tag: "Видео" },
-          { num: "5", text: "PLOS ONE, iNaturalist — открытые научные данные", tag: "Наука" },
-          { num: "6", text: "Wikimedia Commons — свободные изображения", tag: "Медиа" },
-        ].map((s) => (
-          <div key={s.num} className="source-item">
-            <span className="source-num">{s.num}</span>
-            <span className="source-text">{s.text}</span>
-            <span className="source-tag">{s.tag}</span>
-          </div>
-        ))}
-      </div>
-      <div className="photo-credit" style={{ marginTop: "1.5rem" }}>Все изображения — с указанием источников</div>
+  <LightSlide>
+    <Badge>Источники</Badge>
+    <h2 className="s-h2 dark">Использованные источники</h2>
+    <div className="s12-list">
+      {[
+        {n:"1",t:"Кримина, В. А. «Биологическая коммуникация»",tag:"Книга"},
+        {n:"2",t:"Никитин, М. В. «Этология животных»",tag:"Книга"},
+        {n:"3",t:"National Geographic — статьи о дельфинах, пчёлах, слонах",tag:"Интернет"},
+        {n:"4",t:"BBC Earth — документальные материалы о коммуникации животных",tag:"Видео"},
+        {n:"5",t:"PLOS ONE, iNaturalist — открытые научные данные",tag:"Наука"},
+        {n:"6",t:"Wikimedia Commons — свободные иллюстрации и схемы",tag:"Медиа"},
+      ].map(s=>(
+        <div key={s.n} className="s12-item">
+          <span className="s12-n">{s.n}</span>
+          <span className="s12-t">{s.t}</span>
+          <span className="s12-tag">{s.tag}</span>
+        </div>
+      ))}
     </div>
-  </SlideWrapper>
+    <div className="s-credit" style={{marginTop:"1.25rem"}}>Все изображения — с указанием источников</div>
+  </LightSlide>
 );
 
 const Slide13 = () => (
-  <SlideWrapper bg="linear-gradient(135deg, #081218 0%, #0a1e10 100%)">
-    <div className="slide-col-text" style={{ maxWidth: "760px", margin: "0 auto", textAlign: "center" }}>
-      <SectionBadge>Приложения</SectionBadge>
-      <h2 className="slide-h2">Дополнительные материалы</h2>
-      <div className="appendix-grid">
-        {[
-          { emoji: "🎬", title: "Видео", desc: "Танец пчёл (waggle dance)" },
-          { emoji: "🎵", title: "Аудио", desc: "Свист дельфина-афалины" },
-          { emoji: "📊", title: "Диаграмма", desc: "Типы феромонов по функции" },
-          { emoji: "🖼️", title: "Фотогалерея", desc: "Коммуникация в дикой природе" },
-        ].map((a, i) => (
-          <div key={i} className="appendix-card">
-            <div className="appendix-emoji">{a.emoji}</div>
-            <div className="appendix-title">{a.title}</div>
-            <div className="appendix-desc">{a.desc}</div>
-          </div>
-        ))}
-      </div>
-      <div className="appendix-credit">Материалы подготовлены автором проекта — Авдеевой Каролиной</div>
+  <LightSlide image={IMGS.whale}>
+    <Badge>Приложения</Badge>
+    <h2 className="s-h2 dark">Дополнительные материалы</h2>
+    <div className="s13-grid">
+      {[
+        {e:"🎬",h:"Видео",t:"Танец пчёл (waggle dance)"},
+        {e:"🎵",h:"Аудио",t:"Свист дельфина-афалины"},
+        {e:"📊",h:"Диаграмма",t:"Типы феромонов по функции"},
+        {e:"🖼️",h:"Галерея",t:"Коммуникация в дикой природе"},
+      ].map((a,i)=>(
+        <div key={i} className="s13-card">
+          <div className="s13-em">{a.e}</div>
+          <div className="s13-h">{a.h}</div>
+          <div className="s13-t">{a.t}</div>
+        </div>
+      ))}
     </div>
-  </SlideWrapper>
+    <div className="s-credit" style={{marginTop:"1.5rem"}}>Материалы подготовлены автором проекта — Авдеевой Каролиной</div>
+  </LightSlide>
 );
 
-const SLIDE_COMPONENTS = [
-  Slide1, Slide2, Slide3, Slide4, Slide5, Slide6, Slide7,
-  Slide8, Slide9, Slide10, Slide11, Slide12, Slide13,
-];
+const SLIDES = [Slide1,Slide2,Slide3,Slide4,Slide5,Slide6,Slide7,Slide8,Slide9,Slide10,Slide11,Slide12,Slide13];
 
 export default function Index() {
-  const [current, setCurrent] = useState(0);
-  const [animDir, setAnimDir] = useState<"next" | "prev">("next");
-  const [animating, setAnimating] = useState(false);
+  const [cur,  setCur]  = useState(0);
+  const [dir,  setDir]  = useState<"n"|"p">("n");
+  const [busy, setBusy] = useState(false);
 
-  const goTo = useCallback((index: number, dir: "next" | "prev") => {
-    if (animating) return;
-    setAnimating(true);
-    setAnimDir(dir);
-    setTimeout(() => {
-      setCurrent(index);
-      setAnimating(false);
-    }, 380);
-  }, [animating]);
+  const go = useCallback((idx: number, d: "n"|"p") => {
+    if (busy) return;
+    setBusy(true); setDir(d);
+    setTimeout(() => { setCur(idx); setBusy(false); }, 360);
+  }, [busy]);
 
-  const goNext = useCallback(() => {
-    if (current < TOTAL - 1) goTo(current + 1, "next");
-  }, [current, goTo]);
-
-  const goPrev = useCallback(() => {
-    if (current > 0) goTo(current - 1, "prev");
-  }, [current, goTo]);
+  const next = useCallback(() => { if (cur < TOTAL-1) go(cur+1,"n"); }, [cur,go]);
+  const prev = useCallback(() => { if (cur > 0) go(cur-1,"p"); }, [cur,go]);
 
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); goNext(); }
-      if (e.key === "ArrowLeft") { e.preventDefault(); goPrev(); }
+    const h = (e: KeyboardEvent) => {
+      if (e.key==="ArrowRight"||e.key===" ") { e.preventDefault(); next(); }
+      if (e.key==="ArrowLeft") { e.preventDefault(); prev(); }
     };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [goNext, goPrev]);
+    window.addEventListener("keydown",h);
+    return () => window.removeEventListener("keydown",h);
+  },[next,prev]);
 
-  const SlideComp = SLIDE_COMPONENTS[current];
-
+  const Comp = SLIDES[cur];
   return (
-    <div className="presentation-root">
-      <div
-        key={current}
-        className={`slide-anim ${animDir === "next" ? "slide-anim-next" : "slide-anim-prev"}`}
-      >
-        <SlideComp />
+    <div className="pres-root">
+      <div key={cur} className={dir==="n" ? "sl-in-r" : "sl-in-l"}>
+        <Comp />
       </div>
-
-      <button
-        className="nav-btn nav-btn-prev"
-        onClick={goPrev}
-        disabled={current === 0}
-        aria-label="Предыдущий слайд"
-      >
-        <Icon name="ChevronLeft" size={30} />
-      </button>
-
-      <button
-        className="nav-btn nav-btn-next"
-        onClick={goNext}
-        disabled={current === TOTAL - 1}
-        aria-label="Следующий слайд"
-      >
-        <Icon name="ChevronRight" size={30} />
-      </button>
-
-      <div className="slide-dots">
-        {Array.from({ length: TOTAL }).map((_, i) => (
-          <button
-            key={i}
-            className={`dot ${i === current ? "dot-active" : ""}`}
-            onClick={() => goTo(i, i > current ? "next" : "prev")}
-            aria-label={`Слайд ${i + 1}`}
-          />
+      <button className="nav-prev" onClick={prev} disabled={cur===0}><Icon name="ChevronLeft" size={28}/></button>
+      <button className="nav-next" onClick={next} disabled={cur===TOTAL-1}><Icon name="ChevronRight" size={28}/></button>
+      <div className="dots">
+        {Array.from({length:TOTAL}).map((_,i)=>(
+          <button key={i} className={`dot${i===cur?" dot-on":""}`} onClick={()=>go(i,i>cur?"n":"p")}/>
         ))}
       </div>
-
-      <div className="slide-counter">
-        {current + 1} / {TOTAL}
-      </div>
+      <div className="counter">{cur+1} / {TOTAL}</div>
     </div>
   );
 }
