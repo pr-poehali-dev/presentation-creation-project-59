@@ -245,9 +245,9 @@
 }
 .s-h2 {
   font-family: "Cormorant", serif;
-  font-size: clamp(1.9rem, 3.2vw, 3rem);
+  font-size: clamp(2.6rem, 4.2vw, 4rem);
   font-weight: 700;
-  line-height: 1.12;
+  line-height: 1.1;
   margin-bottom: 1.25rem;
 }
 .s-h2.dark {
@@ -363,7 +363,7 @@
 }
 .s1-title {
   font-family: "Cormorant", serif;
-  font-size: clamp(2.6rem, 5.5vw, 4.8rem);
+  font-size: clamp(3.2rem, 6.5vw, 5.8rem);
   font-weight: 800;
   color: #fff;
   line-height: 1.08;
@@ -395,7 +395,7 @@
   letter-spacing: 0.05em;
 }
 .s1-name {
-  font-size: 1.05rem;
+  font-size: 1.3rem;
   font-weight: 700;
   color: #fff;
 }
@@ -442,7 +442,7 @@
   font-size: 1.15rem;
 }
 .s2-txt {
-  font-size: 0.88rem;
+  font-size: 1.05rem;
   color: var(--tx1);
   line-height: 1.3;
   font-weight: 500;
@@ -466,15 +466,15 @@
   margin-top: 1px;
 }
 .bullet-h {
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 700;
   color: var(--tx1);
-  margin-bottom: 2px;
+  margin-bottom: 4px;
 }
 .bullet-t {
-  font-size: 0.82rem;
+  font-size: 1rem;
   color: var(--tx2);
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
 /* ══ SCHEMA ══ */
@@ -490,13 +490,13 @@
   background: var(--ac-l);
   border: 1.5px solid #86efac;
   border-radius: 12px;
-  padding: 0.6rem 1rem;
+  padding: 0.7rem 1.2rem;
   text-align: center;
-  font-size: 0.82rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--tx1);
   line-height: 1.4;
-  min-width: 80px;
+  min-width: 90px;
 }
 .sch-arr {
   display: flex;
@@ -525,8 +525,8 @@
   background: #f1f5f9;
   border: 1.5px solid #e2e8f0;
   border-radius: 20px;
-  padding: 0.4rem 0.9rem;
-  font-size: 0.82rem;
+  padding: 0.5rem 1.1rem;
+  font-size: 1rem;
   font-weight: 500;
   color: var(--tx1);
 }
@@ -582,15 +582,15 @@
   font-size: 1.4rem;
 }
 .s5-name {
-  font-size: 0.88rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: #fff;
-  margin: 0.2rem 0 0.15rem;
+  margin: 0.25rem 0 0.2rem;
 }
 .s5-desc {
-  font-size: 0.68rem;
-  color: rgba(255, 255, 255, 0.8);
-  line-height: 1.3;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.35;
 }
 .s5-credit {
   font-size: 0.62rem;
@@ -615,15 +615,15 @@
   flex-shrink: 0;
 }
 .fact-h {
-  font-size: 0.95rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: var(--tx1);
-  margin-bottom: 3px;
+  margin-bottom: 4px;
 }
 .fact-t {
-  font-size: 0.78rem;
+  font-size: 0.92rem;
   color: var(--tx2);
-  line-height: 1.42;
+  line-height: 1.45;
 }
 
 /* ══ SLIDE 8 ══ */
@@ -669,7 +669,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.76rem;
+  font-size: 0.9rem;
   color: var(--tx2);
   background: var(--ac-l);
   border: 1px solid #86efac;
@@ -750,16 +750,16 @@
   margin-bottom: 0.3rem;
 }
 .s10-ch {
-  font-size: 0.9rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: #fff;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.35rem;
   line-height: 1.25;
 }
 .s10-ct {
-  font-size: 0.73rem;
-  color: rgba(255, 255, 255, 0.75);
-  line-height: 1.4;
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.44;
 }
 
 /* ══ SLIDE 11 ══ */
@@ -787,16 +787,16 @@
   margin-bottom: 0.5rem;
 }
 .s11-h {
-  font-size: 0.95rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: #fff;
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.4rem;
   line-height: 1.25;
 }
 .s11-t {
-  font-size: 0.76rem;
-  color: rgba(255, 255, 255, 0.75);
-  line-height: 1.42;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.46;
 }
 
 /* ══ SLIDE 12 ══ */
@@ -823,7 +823,7 @@
 }
 .s12-t {
   flex: 1;
-  font-size: 0.85rem;
+  font-size: 1rem;
   color: var(--tx1);
 }
 .s12-tag {
@@ -864,12 +864,12 @@
   margin-bottom: 0.45rem;
 }
 .s13-h {
-  font-size: 0.9rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: var(--tx1);
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.3rem;
 }
 .s13-t {
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   color: var(--tx2);
 }
